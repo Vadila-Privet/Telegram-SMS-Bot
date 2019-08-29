@@ -1,0 +1,38 @@
+version: '3'
+services:
+
+  bot:
+    build: .
+    container_name: 'bot'
+    working_dir: /go/src/bot
+    command: go run main.go
+    ports:
+      - '8080:8080'
+    volumes:
+      - './bot:/go/src/bot'
+      - '/home/user/go/src/github.com:/usr/local/go/src/github.com'
+      - '/home/user/go/src/golang.org:/usr/local/go/src/golang.org'
+    depends_on:
+      - 'db'
+    # entrypoint:
+    #   - '/entrypoint.sh'
+  app:
+    build: .
+    container_name: 'app'
+    working_dir: /go/src/app
+    command: go run main.go
+    ports:
+      - '8181:8181'
+    volumes:
+      - './app:/go/src/app'
+      - '/home/user/go/src/github.com:/usr/local/go/src/github.com'
+      - '/home/user/go/src/golang.org:/usr/local/go/src/golang.org'
+    depends_on:
+      - 'db'
+  db:
+    image: mongo
+    container_name: 'mongo'
+    ports:
+      - 27100:27017
+    volumes:
+      - ./mongo:/data/db
